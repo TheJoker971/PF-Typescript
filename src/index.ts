@@ -1,10 +1,7 @@
 import { A, O, pipe } from "@mobily/ts-belt";
+import Product from "./interface/Product";
+import Token from "./interface/Token";
 
-interface Product  {
-    name:string;
-    price:number;
-    inStock:boolean;
-}
 // Ceci est une closure qui ajoute deux 
 function addTwo()  {
     let count = 0;
@@ -65,12 +62,7 @@ const dropWhile = (predicate:(item:Product)=>boolean) => {
 console.log(dropWhile((product:Product)=> product.price <80));
 
 // On va créer une fonction qui va automatiquement mettre le mint a false si la quantité est égal a 0 et mettre true si > 0
-interface Token {
-    name:string;
-    symbol:string;
-    quantity:number;
-    mint:boolean;
-}
+
 
 const tokens : Token[] = [
     {name:"PEPE",symbol:"PEPE",quantity:14562034,mint:false},
