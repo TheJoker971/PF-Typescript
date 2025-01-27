@@ -101,3 +101,160 @@ console.log(resultat); // 20
 Ce dépôt explore en profondeur les principes de la programmation fonctionnelle, met en avant la puissance de `ts-belt` et propose des exemples pratiques ainsi que des fonctions utilitaires personnalisées pour vous aider à maîtriser la programmation fonctionnelle avec TypeScript.
 
 ---
+
+
+## **Manipulation des Objets avec TS-Belt (Dict)**
+
+Les objets (ou dictionnaires) sont des structures clés en JavaScript et TypeScript. Avec `ts-belt`, la manipulation d’objets devient plus facile et fonctionnelle. Voici les concepts abordés accompagnés d'exemples.
+
+### **1. Supprimer une clé d’un objet**
+
+#### Exemple : Supprimer une clé avec `D.deleteKey`
+
+```typescript
+import { D } from "ts-belt";
+
+const obj = { name: "Laptop", price: 1000, stock: true };
+
+const objWithoutPrice = D.deleteKey(obj, "price");
+
+console.log(objWithoutPrice);
+/*
+{
+  name: "Laptop",
+  stock: true
+}
+*/
+```
+
+### **2. Extraire des propriétés spécifiques**
+
+#### Exemple : Recréer un objet avec uniquement les propriétés numériques
+
+```typescript
+const obj = { name: "Laptop", price: 1000, stock: true, category: "Electronics" };
+
+const numericProps = D.filter(obj, value => typeof value === "number");
+
+console.log(numericProps);
+/*
+{
+  price: 1000
+}
+*/
+```
+
+### **3. Filtrer les clés d’un objet**
+
+#### Exemple : Ne conserver que les clés commençant par 'p'
+
+```typescript
+const obj = { price: 1000, stock: true, brand: "Dell", processor: "Intel" };
+
+const filteredObj = D.filterWithKey(obj, (value, key) => key.startsWith("p"));
+
+console.log(filteredObj);
+/*
+{
+  price: 1000,
+  processor: "Intel"
+}
+*/
+```
+
+### **4. Récupérer une clé avec sécurité**
+
+#### Exemple : Utiliser `D.get` et `D.getUnsafe`
+
+```typescript
+const obj = { name: "Laptop", price: 1000, stock: true };
+
+const price = D.get(obj, "price"); // Option<number>
+const stock = D.getUnsafe(obj, "stock"); // boolean
+
+console.log(price); // Some(1000)
+console.log(stock); // true
+```
+
+### **5. Vérifier si un objet est vide après suppression des clés**
+
+#### Exemple : Supprimer toutes les clés et vérifier
+
+```typescript
+const obj = { name: "Laptop", price: 1000, stock: true };
+
+const emptyObj = D.reduce(obj, (acc, _value, key) => D.deleteKey(acc, key), obj);
+
+console.log(D.isEmpty(emptyObj)); // true
+```
+
+### **6. Comparer des objets après une mise à jour**
+
+#### Exemple : Mettre à jour une clé et comparer
+
+```typescript
+const obj = { name: "Laptop", price: 1000 };
+
+const updatedObj = D.set(obj, "price", 2000);
+
+const arePricesDifferent = D.get(obj, "price") !== D.get(updatedObj, "price");
+
+console.log(arePricesDifferent ? "Les prix sont différents" : "Les prix sont identiques");
+// "Les prix sont différents"
+```
+
+### **7. Ajouter une clé à un objet vide**
+
+#### Exemple : Créer un objet vide et ajouter une clé
+
+```typescript
+const emptyObj = {};
+
+const newObj = D.set(emptyObj, "name", "Laptop");
+
+console.log(newObj);
+/*
+{
+  name: "Laptop"
+}
+*/
+```
+
+### **8. Modifier les clés d’un objet**
+
+#### Exemple : Ajouter un préfixe aux clés
+
+```typescript
+const obj = { price: 1000, stock: true, processor: "Intel" };
+
+const prefixedObj = D.mapWithKey(obj, (value, key) => [`pref_${key}`, value]);
+
+console.log(prefixedObj);
+/*
+{
+  pref_price: 1000,
+  pref_stock: true,
+  pref_processor: "Intel"
+}
+*/
+```
+
+### **9. Rejeter des clés basées sur une condition**
+
+#### Exemple : Rejeter les clés avec des valeurs différentes de 1000
+
+```typescript
+const obj = { name: "Laptop", price: 1000, stock: false, warranty: false };
+
+const filteredObj = D.reject(obj, value => value !== 1000);
+
+console.log(filteredObj);
+/*
+{
+  price: 1000
+}
+*/
+```
+
+Ces exemples couvrent les concepts essentiels pour manipuler les objets avec `ts-belt` tout en respectant les principes de la programmation fonctionnelle. Ils montrent comment accomplir des tâches courantes de manière immuable et expressive.
+
