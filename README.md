@@ -98,8 +98,6 @@ const resultat = F.pipe(
 console.log(resultat); // 20
 ```
 
-Ce dépôt explore en profondeur les principes de la programmation fonctionnelle, met en avant la puissance de `ts-belt` et propose des exemples pratiques ainsi que des fonctions utilitaires personnalisées pour vous aider à maîtriser la programmation fonctionnelle avec TypeScript.
-
 ---
 
 
@@ -256,5 +254,189 @@ console.log(filteredObj);
 */
 ```
 
-Ces exemples couvrent les concepts essentiels pour manipuler les objets avec `ts-belt` tout en respectant les principes de la programmation fonctionnelle. Ils montrent comment accomplir des tâches courantes de manière immuable et expressive.
+---
+
+## **Manipulation des Fonctions avec TS-Belt**
+
+Les fonctions sont au cœur de la programmation fonctionnelle. Avec `ts-belt`, on dispose d'outils puissants pour travailler avec des fonctions, les composer, les limiter ou manipuler leurs résultats.
+
+### **1. Retourner une valeur avec une fonction**
+
+#### Exemple : Utiliser `F.identity`
+
+```typescript
+import { F } from "ts-belt";
+
+const value = 42;
+const result = F.identity(value);
+
+console.log(result); // 42
+```
+
+### **2. Vérifier plusieurs prédicats**
+
+#### Exemple : Utiliser `F.allPass` pour valider un nombre
+
+```typescript
+const number = 12;
+const predicates = [
+  (n: number) => n > 10,
+  (n: number) => n % 2 === 0,
+];
+
+const isValid = F.allPass(predicates)(number);
+
+console.log(isValid); // true
+```
+
+### **3. Limiter les appels à une fonction**
+
+#### Exemple : Utiliser `F.throttle`
+
+```typescript
+const logMessage = (message: string) => console.log(message);
+
+const throttledLog = F.throttle(logMessage, 2000);
+
+throttledLog("Hello");
+throttledLog("World"); // Appelé seulement après 2 secondes
+```
+
+### **4. Manipuler les erreurs avec `F.tryCatch`**
+
+#### Exemple : Gérer les erreurs lors du parsing JSON
+
+```typescript
+import { F, R } from "ts-belt";
+
+const jsonString = '{"name": "Joe"}';
+
+const result = F.pipe(
+  jsonString,
+  F.tryCatch<string, { name: string }>(JSON.parse),
+  R.map(user => user.name),
+  R.getWithDefault("Erreur")
+);
+
+console.log(result); // "Joe"
+```
+
+### **5. Fonction avec fermeture (closure)**
+
+#### Exemple : Une fonction avec un comportement unique
+
+```typescript
+const oneShot = () => {
+  let called = false;
+  return () => {
+    if (called) return "Too late";
+    called = true;
+    return "One shot";
+  };
+};
+
+const fn = oneShot();
+console.log(fn()); // "One shot"
+console.log(fn()); // "Too late"
+```
+
+### **6. Forcer une valeur à un type et vérifier l'égalité**
+
+#### Exemple : Utiliser `F.coerce` et `F.equals`
+
+```typescript
+import { F } from "ts-belt";
+
+const value = "42";
+const coercedValue = F.coerce<number>(value as any);
+
+const isEqual = F.equals(coercedValue, 42);
+
+console.log(isEqual ? "Valeurs égales" : "Valeurs différentes");
+// "Valeurs égales"
+```
+
+---
+
+## **Manipulation des Résultats avec TS-Belt (Result)**
+
+Le type `Result` de `ts-belt` est une abstraction puissante pour gérer les succès et les erreurs de manière fonctionnelle. Voici quelques concepts fondamentaux accompagnés d'exemples concrets pour maîtriser cette fonctionnalité.
+
+### **1. Transformer une exécution en `Result`**
+
+#### Exemple : Utiliser `R.fromExecution` et `R.match`
+
+```typescript
+import { R } from "ts-belt";
+
+const riskyFunction = () => {
+  if (Math.random() > 0.5) {
+    return 100;
+  }
+  throw new Error("Erreur");
+};
+
+const result = R.fromExecution(riskyFunction);
+
+R.match(result, {
+  Ok: value => console.log("Succès :", value),
+  Error: error => console.log("Erreur :", error.message),
+});
+```
+
+### **2. Gérer les erreurs avec `R.fromNullable` et `R.tapError`**
+
+#### Exemple : Créer un `Result` à partir d'une valeur nullable
+
+```typescript
+const value = null;
+
+const result = R.pipe(
+  R.fromNullable(value, "Valeur nulle"),
+  R.tapError(error => console.error("Erreur :", error)),
+  R.recover(() => "Valeur par défaut")
+);
+
+console.log(result); // "Valeur par défaut"
+```
+
+### **3. Inverser `Ok` et `Error`**
+
+#### Exemple : Utiliser `R.swap`
+
+```typescript
+const result = R.fromNullable(null, "Erreur");
+
+const swapped = R.swap(result);
+
+console.log(R.match(swapped, {
+  Ok: errorMessage => `Initialement une erreur : ${errorMessage}`,
+  Error: value => `Initialement un succès : ${value}`,
+}));
+```
+
+### **4. Convertir un `Result` en Option**
+
+#### Exemple : Afficher le résultat ou convertir en option
+
+```typescript
+const riskyFunction = () => {
+  if (Math.random() > 0.5) {
+    return 150;
+  }
+  throw new Error("Erreur");
+};
+
+const result = R.fromExecution(riskyFunction);
+
+R.match(result, {
+  Ok: value => console.log("Succès :", value),
+  Error: error => console.log("Erreur :", error.message),
+});
+
+const option = R.toOption(result);
+console.log(option); // Some(150) ou None
+```
+
+
 
