@@ -79,3 +79,41 @@ const updateMint = (list:Token[]) =>{
 }
 
 console.log(updateMint(tokens));
+
+// on peut créer des class différemment
+
+const player = (name:string) => {
+    let pseudo = name;
+    let bestScore = 0;
+    let score=0;
+
+    const getPseudo = () => pseudo;
+    const setPseudo = (p:string) => {pseudo = p;};
+
+    const increment = (x:number) => score += x;
+
+    const getBestScore = () => bestScore;
+    const endParty = () => {
+        (score > bestScore) ? bestScore = score : null;
+        score ==0;
+    }
+
+    return {
+        getPseudo,
+        setPseudo,
+        increment,
+        getBestScore,
+        endParty
+    }
+
+}
+
+const joker = player("joker");
+console.log(joker.getPseudo());
+joker.setPseudo("Joker");
+console.log(joker.increment(20));
+console.log(joker.increment(500));
+console.log(joker.getBestScore());
+joker.endParty();
+console.log(joker.getBestScore());
+
