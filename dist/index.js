@@ -46,6 +46,7 @@ const dropWhile = (predicate) => {
     return ts_belt_1.A.dropWhile(products, predicate);
 };
 console.log(dropWhile((product) => product.price < 80));
+// On va créer une fonction qui va automatiquement mettre le mint a false si la quantité est égal a 0 et mettre true si > 0
 const tokens = [
     { name: "PEPE", symbol: "PEPE", quantity: 14562034, mint: false },
     { name: "Bitcoin", symbol: "BTC", quantity: 0, mint: true },
@@ -56,3 +57,32 @@ const updateMint = (list) => {
     return (0, ts_belt_1.pipe)(list, ts_belt_1.A.map((token) => ({ ...token, mint: token.quantity > 0, })));
 };
 console.log(updateMint(tokens));
+// on peut créer des class différemment
+const player = (name) => {
+    let pseudo = name;
+    let bestScore = 0;
+    let score = 0;
+    const getPseudo = () => pseudo;
+    const setPseudo = (p) => { pseudo = p; };
+    const increment = (x) => score += x;
+    const getBestScore = () => bestScore;
+    const endParty = () => {
+        (score > bestScore) ? bestScore = score : null;
+        score == 0;
+    };
+    return {
+        getPseudo,
+        setPseudo,
+        increment,
+        getBestScore,
+        endParty
+    };
+};
+const joker = player("joker");
+console.log(joker.getPseudo());
+joker.setPseudo("Joker");
+console.log(joker.increment(20));
+console.log(joker.increment(500));
+console.log(joker.getBestScore());
+joker.endParty();
+console.log(joker.getBestScore());
