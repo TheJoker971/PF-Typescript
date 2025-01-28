@@ -590,6 +590,123 @@ const hasEven = A.some(numbers, n => n % 2 === 0);
 console.log(hasEven); // false
 ```
 
+---
+
+## **Fonctions Personnalisées**
+
+
+### **1. Ajouter un préfixe à chaque clé d’un objet**
+
+#### Fonction personnalisée
+
+```typescript
+const addPrefixToKeys = <T extends Record<string, any>>(obj: T, prefix: string): Record<string, any> => {
+  return Object.entries(obj).reduce((acc, [key, value]) => {
+    acc[`${prefix}${key}`] = value;
+    return acc;
+  }, {} as Record<string, any>);
+};
+
+// Exemple d'utilisation
+const originalObj = { name: "Alice", age: 25 };
+const updatedObj = addPrefixToKeys(originalObj, "user_");
+console.log(updatedObj);
+/*
+{
+  user_name: "Alice",
+  user_age: 25
+}
+*/
+```
+
+### **2. Filtrer les nombres pairs dans un tableau et les doubler**
+
+#### Fonction personnalisée
+
+```typescript
+const filterAndDoubleEvens = (arr: number[]): number[] => {
+  return arr.filter(n => n % 2 === 0).map(n => n * 2);
+};
+
+// Exemple d'utilisation
+const numbers = [1, 2, 3, 4, 5, 6];
+const result = filterAndDoubleEvens(numbers);
+console.log(result); // [4, 8, 12]
+```
+
+### **3. Calculer la somme des propriétés numériques d’un objet**
+
+#### Fonction personnalisée
+
+```typescript
+const sumNumericProperties = <T extends Record<string, any>>(obj: T): number => {
+  return Object.values(obj).reduce((sum, value) => {
+    if (typeof value === "number") {
+      return sum + value;
+    }
+    return sum;
+  }, 0);
+};
+
+// Exemple d'utilisation
+const obj = { a: 10, b: "hello", c: 20, d: true };
+const sum = sumNumericProperties(obj);
+console.log(sum); // 30
+```
+
+### **4. Inverser les clés et valeurs d’un objet**
+
+#### Fonction personnalisée
+
+```typescript
+const invertObject = <T extends Record<string, string | number>>(obj: T): Record<string, string> => {
+  return Object.entries(obj).reduce((acc, [key, value]) => {
+    acc[value.toString()] = key;
+    return acc;
+  }, {} as Record<string, string>);
+};
+
+// Exemple d'utilisation
+const obj = { a: 1, b: 2, c: 3 };
+const inverted = invertObject(obj);
+console.log(inverted);
+/*
+{
+  "1": "a",
+  "2": "b",
+  "3": "c"
+}
+*/
+```
+
+### **5. Fusionner deux objets en supprimant les valeurs nulles**
+
+#### Fonction personnalisée
+
+```typescript
+const mergeWithoutNulls = <T extends Record<string, any>, U extends Record<string, any>>(obj1: T, obj2: U): Record<string, any> => {
+  return { ...obj1, ...obj2, ...Object.entries(obj2).reduce((acc, [key, value]) => {
+    if (value === null) {
+      delete acc[key];
+    }
+    return acc;
+  }, { ...obj1 }) };
+};
+
+// Exemple d'utilisation
+const obj1 = { a: 1, b: 2 };
+const obj2 = { b: null, c: 3 };
+const merged = mergeWithoutNulls(obj1, obj2);
+console.log(merged);
+/*
+{
+  a: 1,
+  c: 3
+}
+*/
+```
+
+
 
 
 
