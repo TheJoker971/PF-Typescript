@@ -438,5 +438,158 @@ const option = R.toOption(result);
 console.log(option); // Some(150) ou None
 ```
 
+---
+
+## **Manipulation des Résultats avec TS-Belt (Result)**
+
+Le type `Result` de `ts-belt` est une abstraction puissante pour gérer les succès et les erreurs de manière fonctionnelle. Voici quelques concepts fondamentaux accompagnés d'exemples concrets pour maîtriser cette fonctionnalité.
+
+### **1. Transformer une exécution en `Result`**
+
+#### Exemple : Utiliser `R.fromExecution` et `R.match`
+
+```typescript
+import { R } from "ts-belt";
+
+const riskyFunction = () => {
+  if (Math.random() > 0.5) {
+    return 100;
+  }
+  throw new Error("Erreur");
+};
+
+const result = R.fromExecution(riskyFunction);
+
+R.match(result, {
+  Ok: value => console.log("Succès :", value),
+  Error: error => console.log("Erreur :", error.message),
+});
+```
+
+### **2. Gérer les erreurs avec `R.fromNullable` et `R.tapError`**
+
+#### Exemple : Créer un `Result` à partir d'une valeur nullable
+
+```typescript
+const value = null;
+
+const result = R.pipe(
+  R.fromNullable(value, "Valeur nulle"),
+  R.tapError(error => console.error("Erreur :", error)),
+  R.recover(() => "Valeur par défaut")
+);
+
+console.log(result); // "Valeur par défaut"
+```
+
+### **3. Inverser `Ok` et `Error`**
+
+#### Exemple : Utiliser `R.swap`
+
+```typescript
+const result = R.fromNullable(null, "Erreur");
+
+const swapped = R.swap(result);
+
+console.log(R.match(swapped, {
+  Ok: errorMessage => `Initialement une erreur : ${errorMessage}`,
+  Error: value => `Initialement un succès : ${value}`,
+}));
+```
+
+### **4. Convertir un `Result` en Option**
+
+#### Exemple : Afficher le résultat ou convertir en option
+
+```typescript
+const riskyFunction = () => {
+  if (Math.random() > 0.5) {
+    return 150;
+  }
+  throw new Error("Erreur");
+};
+
+const result = R.fromExecution(riskyFunction);
+
+R.match(result, {
+  Ok: value => console.log("Succès :", value),
+  Error: error => console.log("Erreur :", error.message),
+});
+
+const option = R.toOption(result);
+console.log(option); // Some(150) ou None
+```
+
+Ces exemples illustrent comment utiliser `Result` pour encapsuler des succès et des erreurs de manière prévisible et élégante, tout en favorisant la lisibilité et la robustesse du code.
+
+---
+
+## **Outils de Manipulation des Données : every, filter, map, reduce, some**
+
+TS-Belt propose des fonctions utilitaires pour manipuler efficacement des tableaux. Voici un aperçu des principales fonctions :
+
+### **1. Vérifier une condition sur tous les éléments**
+
+#### Exemple : Utiliser `A.every`
+
+```typescript
+import { A } from "ts-belt";
+
+const numbers = [2, 4, 6, 8];
+
+const allEven = A.every(numbers, n => n % 2 === 0);
+
+console.log(allEven); // true
+```
+
+### **2. Filtrer un tableau**
+
+#### Exemple : Utiliser `A.filter`
+
+```typescript
+const numbers = [1, 2, 3, 4, 5];
+
+const evenNumbers = A.filter(numbers, n => n % 2 === 0);
+
+console.log(evenNumbers); // [2, 4]
+```
+
+### **3. Transformer les éléments d’un tableau**
+
+#### Exemple : Utiliser `A.map`
+
+```typescript
+const numbers = [1, 2, 3];
+
+const squaredNumbers = A.map(numbers, n => n * n);
+
+console.log(squaredNumbers); // [1, 4, 9]
+```
+
+### **4. Réduire un tableau à une seule valeur**
+
+#### Exemple : Utiliser `A.reduce`
+
+```typescript
+const numbers = [1, 2, 3, 4];
+
+const sum = A.reduce(numbers, (acc, n) => acc + n, 0);
+
+console.log(sum); // 10
+```
+
+### **5. Vérifier si au moins un élément satisfait une condition**
+
+#### Exemple : Utiliser `A.some`
+
+```typescript
+const numbers = [1, 3, 5, 7];
+
+const hasEven = A.some(numbers, n => n % 2 === 0);
+
+console.log(hasEven); // false
+```
+
+
 
 
